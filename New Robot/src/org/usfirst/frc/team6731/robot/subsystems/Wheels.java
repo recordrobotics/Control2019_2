@@ -26,12 +26,26 @@ public class Wheels extends Subsystem {
 	Spark frontLeft = new Spark(0);
 	Spark backLeft = new Spark(1);
 	SpeedControllerGroup left = new SpeedControllerGroup(frontLeft, backLeft);
+
+	final double turnsens = 1;
+	final double sens = 0.4;
+	final double maxAutoTurn = 0.7;
 	
 	public void curvatureDrive(double forward, double rotation) {
 		double forw = (Math.abs(forward/2) >= 0.3 ? 1 : 0)*(forward / 2);
 		double rot = (Math.abs(rotation/2) >= 0.3 ? 1 : 0)*(rotation / 2);
-		double turnsens = 1;
 		double sens = 0.4;
+		left.set(sens * (forw - turnsens * rot));
+		right.set(sens * (forw + turnsens * rot));
+	}
+	
+	public void autoTurn(double turnFactor) {
+		double forw = 0.5;
+		double rot;
+		if(Math.abs(turnFactor) >= maxAutoTurn)
+				rot = maxAutoTurn;
+		else
+			rot = turnFactor;
 		left.set(sens * (forw - turnsens * rot));
 		right.set(sens * (forw + turnsens * rot));
 	}
